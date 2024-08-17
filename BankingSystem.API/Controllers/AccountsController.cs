@@ -20,7 +20,7 @@ public class AccountsController : ControllerBase
         _transactionService = transactionService;
     }
 
-    [HttpPut("deposit")]
+    [HttpPut("deposit/{accountId}")]
     public async Task<ActionResult<Account>> DepositAccount(int accountId, decimal amount)
     {
         if (amount <= 0)
@@ -37,7 +37,7 @@ public class AccountsController : ControllerBase
         return Ok("Deposit was succesful");
     }
 
-    [HttpPut("withdraw")]
+    [HttpPut("withdraw/{accountId}")]
     public async Task<ActionResult<Account>> WithDrawFromAccount(int accountId, decimal amount)
     {
         var result = await _transactionService.WithDrawFromAccount(accountId, amount);
@@ -55,7 +55,7 @@ public class AccountsController : ControllerBase
     {
         var user = _context.Users.FirstOrDefault(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-        if (string.IsNullOrEmpty(user.Id))
+        if (user.Id == null || string.IsNullOrEmpty(user.Id))
         {
             return Unauthorized();
         }
@@ -118,10 +118,5 @@ public class AccountsController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
-    }
-
-    private bool AccountExists(int id)
-    {
-        return _context.Accounts.Any(e => e.AccountId == id);
     }
 }

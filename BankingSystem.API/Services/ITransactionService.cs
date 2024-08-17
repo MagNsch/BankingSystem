@@ -1,6 +1,4 @@
-﻿using BankingSystem.API.Models;
-
-namespace BankingSystem.API.Services;
+﻿namespace BankingSystem.API.Services;
 
 public interface ITransactionService
 {

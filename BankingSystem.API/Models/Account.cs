@@ -10,10 +10,13 @@ public class Account
 
     public string AccountName { get; set; }
 
-    public decimal Balance { get; set; }
+    public decimal Balance { get; set; } = 0;
 
     public string UserId { get; set; }
+
     [JsonIgnore]
     public User? User { get; set; }
+    [JsonIgnore]
+    public ICollection<AccountTransaction?> Transactions { get; set; } = new List<AccountTransaction?>();
 
 }

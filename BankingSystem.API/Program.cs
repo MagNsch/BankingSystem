@@ -16,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 //Services
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ITransactionCRUD, TransactionCRUD>();
 
 //Authentication
 builder.Services.AddAuthentication();
