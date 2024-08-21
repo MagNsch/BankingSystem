@@ -26,7 +26,7 @@ builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<ApplicationDbContext>().AddApiEndpoints();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlite("Data Source=applicationDb.db"));
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
 var app = builder.Build();

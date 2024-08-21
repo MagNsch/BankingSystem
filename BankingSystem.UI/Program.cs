@@ -1,7 +1,24 @@
+using BankingSystem.API;
+using BankingSystem.UI.RestService;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
+    options =>
+    {
+        options.LoginPath = "/Login/Login";
+        options.AccessDeniedPath = "/Login/AccessDenied";
+        options.LogoutPath = "/Login/LogOut";
+    });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<IRestServiceClient, RestServiceClient>();
 
 var app = builder.Build();
 
@@ -18,6 +35,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

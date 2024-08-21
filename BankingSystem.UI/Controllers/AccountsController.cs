@@ -1,13 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BankingSystem.API.Models;
+using BankingSystem.UI.RestService;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BankingSystem.UI.Controllers;
 
 public class AccountsController : Controller
 {
-    // GET: AccountsController
-    public ActionResult Index()
+    private readonly IRestServiceClient _restClient;
+
+    public AccountsController(IRestServiceClient restClient)
     {
-        return View();
+        _restClient = restClient;
+    }
+
+    // GET: AccountsController
+    public async Task<IActionResult> Index()
+    {
+        var usersAccounts = await _restClient.GetAllAccounts();
+        return View(usersAccounts);
     }
 
     // GET: AccountsController/Details/5
