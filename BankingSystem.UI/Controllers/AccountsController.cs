@@ -1,6 +1,9 @@
 ﻿using BankingSystem.API.Models;
 using BankingSystem.UI.RestService;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using System.Security.Claims;
 
 namespace BankingSystem.UI.Controllers;
 
@@ -14,36 +17,53 @@ public class AccountsController : Controller
     }
 
     // GET: AccountsController
+    [Authorize]
     public async Task<IActionResult> Index()
     {
-        var usersAccounts = await _restClient.GetAllAccounts();
+        string userId = User.FindFirst("id")?.Value;
+        if (userId is null)
+        {
+            return RedirectToAction("Register");
+        }
+        var usersAccounts = await _restClient.GetAllAccounts(userId);
         return View(usersAccounts);
     }
 
     // GET: AccountsController/Details/5
-    public ActionResult Details(int id)
+    public async Task<ActionResult> Details(int id)
     {
-        return View();
+        var account = await _restClient.GetAccountById(id);
+        return View(account);
     }
 
     // GET: AccountsController/Create
-    public ActionResult Create()
+    public ActionResult CreateAccount()
     {
+
         return View();
     }
 
     // POST: AccountsController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Create(IFormCollection collection)
+    public async Task<ActionResult> CreateAccount(Account account)
     {
+
         try
         {
+            string userId = User.FindFirst("id")?.Value;
+            if (userId is null)
+            {
+                return RedirectToAction("Register");
+            }
+            account.UserId = userId;
+            var accountToCreate = await _restClient.CreateAccount(account);
+
             return RedirectToAction(nameof(Index));
         }
         catch
         {
-            return View();
+            return View(account);
         }
     }
 

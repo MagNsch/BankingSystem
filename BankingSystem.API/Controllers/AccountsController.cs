@@ -50,36 +50,38 @@ public class AccountsController : ControllerBase
     }
 
     // GET: api/Accounts
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<Account>>> GetAccounts()
+    [HttpGet("getall/{userId}")]
+    public async Task<ActionResult<IEnumerable<Account>>> GetAccounts(string userId)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-        if (user.Id == null || string.IsNullOrEmpty(user.Id))
+        var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+        
+        if (accounts == null || accounts.Count == 0)
         {
-            return Unauthorized();
+            return NotFound("No accounts found for the user.");
         }
 
-        return await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+        return Ok(accounts);
     }
 
     // GET: api/Accounts/5
-    [Authorize]
+
     [HttpGet("{id}")]
     public async Task<ActionResult<Account>> GetAccount(int id)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+        //var user = _context.Users.FirstOrDefault(u => u.Id == userId);
 
-        if (string.IsNullOrEmpty(user.Id))
-        {
-            return Unauthorized();
-        }
+        //if (string.IsNullOrEmpty(user.Id))
+        //{
+        //    return Unauthorized();
+        //}
 
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id && a.UserId == user.Id);
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id); //&& a.UserId == user.Id*/);
 
         if (account == null)
         {
-            return NotFound();
+            return NotFound("account with that id could not be found");
         }
 
         return account;
@@ -87,10 +89,10 @@ public class AccountsController : ControllerBase
 
     // POST: api/Accounts
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPost]
+    [HttpPost("newaccount")]
     public async Task<ActionResult<Account>> PostAccount(Account account)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Id == User.FindFirstValue(ClaimTypes.NameIdentifier));
+        var user = _context.Users.FirstOrDefault(u => u.Id == account.UserId);
         if (string.IsNullOrEmpty(user.Id))
         {
             return Unauthorized();
@@ -104,7 +106,6 @@ public class AccountsController : ControllerBase
     }
 
     // DELETE: api/Accounts/5
-    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAccount(int id)
     {

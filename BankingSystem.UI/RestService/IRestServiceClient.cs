@@ -4,5 +4,7 @@ namespace BankingSystem.UI.RestService;
 
 public interface IRestServiceClient
 {
-    Task<IEnumerable<Account>> GetAllAccounts();
+    Task<IEnumerable<Account>> GetAllAccounts(string userId);
+    Task<Account> GetAccountById(int id);
+    Task<Account> CreateAccount(Account account);
 }

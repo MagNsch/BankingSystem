@@ -22,7 +22,7 @@ public class TransactionsController : ControllerBase
 
 
     // GET: api/<TransactionsController>
-    [Authorize]
+    
     [HttpGet("{accountId}")]
     public async Task<IEnumerable<AccountTransaction?>> GetAllTransactions(int accountId)
     {

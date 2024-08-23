@@ -1,13 +1,16 @@
-﻿@model IEnumerable<BankingSystem.API.Models.Account>
+﻿@using System.Security.Claims
+@model IEnumerable<BankingSystem.API.Models.Account>
 
 @{
     ViewData["Title"] = "Index";
+    var userNameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+    
 }
 
-<h1>Index</h1>
+<h1>@userNameClaim's accounts</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="CreateAccount">Create New</a>
 </p>
 <table class="table">
     <thead>
