@@ -1,5 +1,6 @@
 using BankingSystem.API;
-using BankingSystem.UI.RestService;
+using BankingSystem.UI.RestService.Accounts;
+using BankingSystem.UI.RestService.Transactions;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,7 +19,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 builder.Services.AddScoped<IRestServiceClient, RestServiceClient>();
+builder.Services.AddScoped<ITransactionRestService, TransactionsRestService>();
 
 var app = builder.Build();
 

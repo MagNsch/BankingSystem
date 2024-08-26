@@ -1,8 +1,7 @@
 ﻿using BankingSystem.API.Models;
-using Humanizer;
 using RestSharp;
 
-namespace BankingSystem.UI.RestService;
+namespace BankingSystem.UI.RestService.Accounts;
 
 public class RestServiceClient : IRestServiceClient
 {
@@ -35,7 +34,7 @@ public class RestServiceClient : IRestServiceClient
     {
         var request = new RestRequest($"{id}", Method.Get);
         var response = await _client.ExecuteAsync<Account>(request);
-        
+
         string errorMessage = "Failed to get account";
         Exceptions(response, errorMessage);
 
@@ -46,12 +45,26 @@ public class RestServiceClient : IRestServiceClient
     {
         var request = new RestRequest("newaccount", Method.Post).AddJsonBody(account);
         var response = await _client.ExecuteAsync<Account>(request);
-        
+
         string errorMessage = "Failed to create account";
         Exceptions(response, errorMessage);
-        
+
         return response.Data;
     }
+
+    public async Task<Account> DeleteAccount(int id)
+    {
+        var request = new RestRequest($"{id}", Method.Delete);
+        var response = await _client.ExecuteAsync<Account>(request);
+
+        string errorMessage = "Failed to delete account";
+        Exceptions(response, errorMessage);
+
+        return response.Data;
+    }
+
+
+    //Helper methods
 
     private static void Exceptions(RestResponse<Account> response, string errorMessageForAccount)
     {

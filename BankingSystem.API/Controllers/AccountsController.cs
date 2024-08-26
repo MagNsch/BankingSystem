@@ -21,14 +21,14 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPut("deposit/{accountId}")]
-    public async Task<ActionResult<Account>> DepositAccount(int accountId, decimal amount)
+    public async Task<ActionResult<bool>> DepositAccount(int accountId, [FromBody] TransferRequest request)
     {
-        if (amount <= 0)
+        if (request.Amount <= 0)
         {
             return BadRequest("The deposit amount must be greater than zero.");
         }
 
-        var result = await _transactionService.DepositAccount(accountId, amount);
+        var result = await _transactionService.DepositAccount(accountId, request.Amount);
 
         if (!result)
         {
@@ -38,9 +38,9 @@ public class AccountsController : ControllerBase
     }
 
     [HttpPut("withdraw/{accountId}")]
-    public async Task<ActionResult<Account>> WithDrawFromAccount(int accountId, decimal amount)
+    public async Task<ActionResult<bool>> WithDrawFromAccount(int accountId, [FromBody] TransferRequest request)
     {
-        var result = await _transactionService.WithDrawFromAccount(accountId, amount);
+        var result = await _transactionService.WithDrawFromAccount(accountId, request.Amount);
 
         if (!result)
         {
@@ -51,16 +51,11 @@ public class AccountsController : ControllerBase
 
     // GET: api/Accounts
     [HttpGet("getall/{userId}")]
-    public async Task<ActionResult<IEnumerable<Account>>> GetAccounts(string userId)
+    public async Task<ActionResult<IEnumerable<Account?>>> GetAccounts(string userId)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
         var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
-        
-        if (accounts == null || accounts.Count == 0)
-        {
-            return NotFound("No accounts found for the user.");
-        }
 
         return Ok(accounts);
     }
@@ -70,14 +65,7 @@ public class AccountsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Account>> GetAccount(int id)
     {
-        //var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-
-        //if (string.IsNullOrEmpty(user.Id))
-        //{
-        //    return Unauthorized();
-        //}
-
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id); //&& a.UserId == user.Id*/);
+        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
 
         if (account == null)
         {
@@ -97,8 +85,6 @@ public class AccountsController : ControllerBase
         {
             return Unauthorized();
         }
-        account.UserId = user.Id;
-
         _context.Accounts.Add(account);
         await _context.SaveChangesAsync();
 
@@ -110,6 +96,7 @@ public class AccountsController : ControllerBase
     public async Task<IActionResult> DeleteAccount(int id)
     {
         var account = await _context.Accounts.FindAsync(id);
+        
         if (account == null)
         {
             return NotFound();
