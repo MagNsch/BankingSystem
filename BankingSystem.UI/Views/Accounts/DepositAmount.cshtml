@@ -12,10 +12,19 @@
 
     <div>
         <label for="amount">Amount:</label>
-        <!-- Input-felt til Amount -->
         <input type="number" id="amount" name="amount" step="0.01" />
     </div>
     <br />
     <button type="submit">Deposit</button>
+
+    @if (ViewData.ModelState.Values.Any(v => v.Errors.Count > 0))
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <p>@error.ErrorMessage</p>
+            }
+        </div>
+    }
 </form>
 

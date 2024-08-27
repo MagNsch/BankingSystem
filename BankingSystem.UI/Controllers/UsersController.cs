@@ -5,15 +5,18 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using BankingSystem.API;
+using Microsoft.AspNetCore.Identity;
 
 namespace BankingSystem.UI.Controllers;
 
 public class UsersController : Controller
 {
     private readonly ApplicationDbContext _context;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UsersController(ApplicationDbContext context)
+    public UsersController(ApplicationDbContext context, IPasswordHasher<User> passwordHasher)
     {
+        _passwordHasher = passwordHasher;
         _context = context;
     }
 
@@ -21,6 +24,27 @@ public class UsersController : Controller
     public ActionResult Login() => View();
 
     public IActionResult AccessDenied() => View();
+
+    //public async Task<IActionResult> RegisterUser(RegisterModel model)
+    //{
+    //    try
+    //    {
+    //        var user = new User();
+    //        user.Email = model.Email;
+    //        user.Pass
+
+
+    //        await _context.Users.AddAsync(user);
+    //    }
+    //    catch (Exception)
+    //    {
+
+    //        throw;
+    //    }
+    //    return View(model);
+    //}
+
+
     public async Task<IActionResult> LogOut()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -34,7 +58,17 @@ public class UsersController : Controller
         User? user = _context.Users.FirstOrDefault(u => u.Email == loginModel.Email);
         if (user == null) { return RedirectToAction("RegisterUser", "accounts"); }
 
-        if (user != null) { await SignIn(user); }
+        var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, loginModel.Password);
+        if (result == PasswordVerificationResult.Failed)
+        {
+            ModelState.AddModelError(string.Empty, "Invalid Password");
+            return View(loginModel);
+        }
+        else
+        {
+            if (user != null) { await SignIn(user); }
+        }
+
         if (string.IsNullOrEmpty(returnUrl))
             //Registring redirect
             return RedirectToAction("Index", "Home");

@@ -33,10 +33,10 @@ public class AccountsController : Controller
         if (ModelState.IsValid)
         {
             ViewBag.Amount = amount;
-            //mistake here
             bool added = await _transactionRestService.DepositToAccount(id, amount);
             if (!added)
             {
+                ModelState.AddModelError("", "Deposit did not succed");
                 return View();
             }
             return RedirectToAction("index");

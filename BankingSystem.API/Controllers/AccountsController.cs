@@ -23,7 +23,7 @@ public class AccountsController : ControllerBase
     [HttpPut("deposit/{accountId}")]
     public async Task<ActionResult<bool>> DepositAccount(int accountId, [FromBody] TransferRequest request)
     {
-        if (request.Amount <= 0)
+        if (request.Amount < 0)
         {
             return BadRequest("The deposit amount must be greater than zero.");
         }

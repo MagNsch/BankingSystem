@@ -9,3 +9,9 @@ public enum AccountType
     BudgetKonto,
 }
 
+public enum AccountTransactionType
+{
+    Overførsel,
+    Hævning
+}
+

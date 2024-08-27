@@ -25,22 +25,11 @@ public class TransactionService : ITransactionService
         try
         {
             var account = await _context.Accounts.FindAsync(accountId);
-            if (account == null)
-            {
-                return false;
-            }
-
-            AccountTransaction accountTransaction = new()
-            {
-                TransferedAmmount = amount,
-                AccountId = accountId,
-                Account = account,
-                CreatedDate = DateTime.UtcNow,
-            };
-            await _context.Transactions.AddAsync(accountTransaction);
+            if (account == null) { return false; }
+            
+            await AddTransaction(accountId, amount, account);
 
             account.Balance += amount;
-
 
             await _context.SaveChangesAsync();
 
@@ -56,11 +45,28 @@ public class TransactionService : ITransactionService
         
     }
 
+    private async Task AddTransaction(int accountId, decimal amount, Account? account)
+    {
+        decimal balancebeforetransaction = account.Balance;
+
+        AccountTransaction accountTransaction = new()
+        {
+            TransferedAmmount = amount,
+            AccountId = accountId,
+            Account = account,
+            CreatedDate = DateTime.UtcNow,
+            BalanceBeforeTransaction = balancebeforetransaction,
+            AccountTransactionType = AccountTransactionType.Overførsel,
+        };
+        await _context.Transactions.AddAsync(accountTransaction);
+    }
+
     public async Task<bool> WithDrawFromAccount(int accountId, decimal amount)
     {
         var account = await _context.Accounts.FindAsync(accountId);
 
         if (account == null || account.Balance < amount) { return false; };
+
 
         account.Balance -= amount;
 
