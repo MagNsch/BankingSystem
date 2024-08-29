@@ -25,24 +25,45 @@ public class UsersController : Controller
 
     public IActionResult AccessDenied() => View();
 
-    //public async Task<IActionResult> RegisterUser(RegisterModel model)
-    //{
-    //    try
-    //    {
-    //        var user = new User();
-    //        user.Email = model.Email;
-    //        user.Pass
+    public IActionResult RegisterUser() => View();
 
+    [HttpPost]
+    public async Task<IActionResult> RegisterUser(RegisterModel model)
+    {
 
-    //        await _context.Users.AddAsync(user);
-    //    }
-    //    catch (Exception)
-    //    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
 
-    //        throw;
-    //    }
-    //    return View(model);
-    //}
+        try
+        {
+            var user = new User
+            {
+                Email = model.Email,
+                PasswordHash = _passwordHasher.HashPassword(null, model.Password)
+            };
+            
+            var newUser = await _context.Users.AddAsync(user);
+
+            if (newUser == null)
+            {
+                ModelState.AddModelError("", "Could not create user");
+                return View(model);
+            }
+
+            await _context.SaveChangesAsync();
+            await SignIn(user);
+            
+            return RedirectToAction("Index", "Accounts");
+        }
+        catch (Exception)
+        {
+
+            ModelState.AddModelError("", "An error occurred while processing your request. Please try again.");
+            return View(model);
+        }
+    }
 
 
     public async Task<IActionResult> LogOut()
@@ -83,7 +104,6 @@ public class UsersController : Controller
         {
             new Claim("id",user.Id.ToString()),
             new Claim(ClaimTypes.Email, user.Email),
-            //new Claim(ClaimTypes.Name, user.FirstName)
         };
 
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
