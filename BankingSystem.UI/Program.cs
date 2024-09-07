@@ -2,6 +2,7 @@ using BankingSystem.API;
 using BankingSystem.API.Models;
 using BankingSystem.UI.RestService.Accounts;
 using BankingSystem.UI.RestService.Transactions;
+using BankingSystem.UI.RestService.Users;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IRestServiceClient, RestServiceClient>();
 builder.Services.AddScoped<ITransactionRestService, TransactionsRestService>();
+builder.Services.AddScoped<IUserClient, UserClient>();
 
 var app = builder.Build();
 

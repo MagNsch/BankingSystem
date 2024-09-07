@@ -13,13 +13,10 @@ public class TransactionCRUD : ITransactionCRUD
     }
     public async Task<IEnumerable<AccountTransaction?>> GetAllTransaction(int accountId)
     {
-        //return await _context.Transactions.Where(a => a.AccountId == accountId).ToListAsync();
-
         var transactions = await _context.Transactions
                            .Include(t => t.Account)
-                           .Where(t => t.AccountId == accountId)
+                           .Where(t => t.AccountId == accountId).AsNoTracking()
                            .ToListAsync();
-
         return transactions;
     }
 }

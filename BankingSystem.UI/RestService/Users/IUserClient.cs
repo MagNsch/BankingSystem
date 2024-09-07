@@ -1,11 +1,12 @@
 ﻿using BankingSystem.API.Models;
+using BankingSystem.UI.Models;
 using RestSharp;
 
 namespace BankingSystem.UI.RestService.Users;
 
 public interface IUserClient
 {
-    Task<User> RegisterUser(User user);
+    Task<RegisterModel> RegisterUser(RegisterModel model);
 
     
 }

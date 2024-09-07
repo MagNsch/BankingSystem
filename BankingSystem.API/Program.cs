@@ -19,7 +19,6 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ITransactionCRUD, TransactionCRUD>();
 
 //Authentication
-builder.Services.AddAuthentication();
 builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
 
 builder.Services.AddIdentityCore<User>()
@@ -48,7 +47,7 @@ app.MapGet("users/me", async (ClaimsPrincipal claims, ApplicationDbContext conte
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication();
 
 app.MapControllers();
 app.MapIdentityApi<User>();

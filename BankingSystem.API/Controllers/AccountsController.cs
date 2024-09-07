@@ -1,9 +1,7 @@
 ﻿using BankingSystem.API.Models;
 using BankingSystem.API.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace BankingSystem.API.Controllers;
 
@@ -53,9 +51,9 @@ public class AccountsController : ControllerBase
     [HttpGet("getall/{userId}")]
     public async Task<ActionResult<IEnumerable<Account?>>> GetAccounts(string userId)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+        var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
 
-        var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).ToListAsync();
+        var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).AsNoTracking().ToListAsync();
 
         return Ok(accounts);
     }
@@ -65,7 +63,7 @@ public class AccountsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Account>> GetAccount(int id)
     {
-        var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
+        var account = await _context.Accounts.AsNoTracking().FirstOrDefaultAsync(a => a.AccountId == id);
 
         if (account == null)
         {
@@ -80,7 +78,7 @@ public class AccountsController : ControllerBase
     [HttpPost("newaccount")]
     public async Task<ActionResult<Account>> PostAccount(Account account)
     {
-        var user = _context.Users.FirstOrDefault(u => u.Id == account.UserId);
+        User? user = _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == account.UserId);
         if (string.IsNullOrEmpty(user.Id))
         {
             return Unauthorized();
@@ -96,7 +94,7 @@ public class AccountsController : ControllerBase
     public async Task<IActionResult> DeleteAccount(int id)
     {
         var account = await _context.Accounts.FindAsync(id);
-        
+
         if (account == null)
         {
             return NotFound();
