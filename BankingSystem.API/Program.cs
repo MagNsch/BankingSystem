@@ -1,6 +1,8 @@
 using BankingSystem.API;
 using BankingSystem.API.Models;
-using BankingSystem.API.Services;
+using BankingSystem.API.Services.AccountServices;
+using BankingSystem.API.Services.CrudTransactions;
+using BankingSystem.API.Services.TransactionServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -17,6 +19,7 @@ builder.Services.AddSwaggerGen();
 //Services
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<ITransactionCRUD, TransactionCRUD>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 //Authentication
 builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);

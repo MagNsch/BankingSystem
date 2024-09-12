@@ -1,6 +1,5 @@
 ﻿using BankingSystem.API.Models;
-using BankingSystem.API.Services;
-using Microsoft.AspNetCore.Authorization;
+using BankingSystem.API.Services.CrudTransactions;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -11,18 +10,14 @@ namespace BankingSystem.API.Controllers;
 [ApiController]
 public class TransactionsController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
     private readonly ITransactionCRUD _transactionCRUD;
 
-    public TransactionsController(ApplicationDbContext context, ITransactionCRUD transactionsCrud)
+    public TransactionsController(ITransactionCRUD transactionsCrud)
     {
-        _context = context;
+
         _transactionCRUD = transactionsCrud;
     }
-
-
     // GET: api/<TransactionsController>
-    
     [HttpGet("{accountId}")]
     public async Task<IEnumerable<AccountTransaction?>> GetAllTransactions(int accountId)
     {

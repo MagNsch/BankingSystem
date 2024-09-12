@@ -1,5 +1,6 @@
 ﻿using BankingSystem.API.Models;
 using RestSharp;
+using System.Collections.Generic;
 
 namespace BankingSystem.UI.RestService.Transactions;
 
@@ -18,22 +19,31 @@ public class TransactionsRestService : ITransactionRestService
         var request = new RestRequest($"{accountId}", Method.Get);
         var response = await _transactionClient.ExecuteAsync<IEnumerable<AccountTransaction>>(request);
 
-        return response.Data;   
+        return response.Data;
     }
 
     public async Task<bool> DepositToAccount(int accountId, decimal amount)
     {
         var request = new RestRequest($"deposit/{accountId}", Method.Put).AddJsonBody(new { Amount = amount });
         var response = await _client.ExecuteAsync(request);
-        
+
         return response.IsSuccessful;
+    }
+
+    public async Task<IEnumerable<AccountTransaction>> GetAllTransactionsById(int accountId)
+    {
+        var request = new RestRequest($"{accountId}", Method.Get);
+        var response = await _transactionClient.ExecuteAsync<List<AccountTransaction>>(request);
+        
+        return response.Data;
     }
 
     public async Task<bool> WithDrawFromAccount(int accountId, decimal amount)
     {
         var request = new RestRequest($"withdraw/{accountId}", Method.Put).AddJsonBody(new { Amount = amount });
         var response = await _client.ExecuteAsync(request);
-        
+
         return response.IsSuccessful;
     }
+
 }

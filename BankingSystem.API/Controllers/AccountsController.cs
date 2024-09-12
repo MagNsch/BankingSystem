@@ -1,5 +1,6 @@
 ﻿using BankingSystem.API.Models;
-using BankingSystem.API.Services;
+using BankingSystem.API.Services.AccountServices;
+using BankingSystem.API.Services.TransactionServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,11 +12,13 @@ public class AccountsController : ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly ITransactionService _transactionService;
+    private readonly IAccountService _accountService;
 
-    public AccountsController(ApplicationDbContext context, ITransactionService transactionService)
+    public AccountsController(ApplicationDbContext context, ITransactionService transactionService, IAccountService accountService)
     {
         _context = context;
         _transactionService = transactionService;
+        _accountService = accountService;
     }
 
     [HttpPut("deposit/{accountId}")]
@@ -51,9 +54,7 @@ public class AccountsController : ControllerBase
     [HttpGet("getall/{userId}")]
     public async Task<ActionResult<IEnumerable<Account?>>> GetAccounts(string userId)
     {
-        var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
-
-        var accounts = await _context.Accounts.Where(a => a.UserId == user.Id).AsNoTracking().ToListAsync();
+        var accounts = await _accountService.GetAllAccounts(userId);
 
         return Ok(accounts);
     }
@@ -63,7 +64,7 @@ public class AccountsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<Account>> GetAccount(int id)
     {
-        var account = await _context.Accounts.AsNoTracking().FirstOrDefaultAsync(a => a.AccountId == id);
+        var account = await _accountService.GetAccount(id);
 
         if (account == null)
         {
@@ -78,13 +79,7 @@ public class AccountsController : ControllerBase
     [HttpPost("newaccount")]
     public async Task<ActionResult<Account>> PostAccount(Account account)
     {
-        User? user = _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == account.UserId);
-        if (string.IsNullOrEmpty(user.Id))
-        {
-            return Unauthorized();
-        }
-        _context.Accounts.Add(account);
-        await _context.SaveChangesAsync();
+         await _accountService.CreateAccount(account);
 
         return CreatedAtAction("GetAccount", new { id = account.AccountId }, account);
     }
@@ -93,15 +88,7 @@ public class AccountsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAccount(int id)
     {
-        var account = await _context.Accounts.FindAsync(id);
-
-        if (account == null)
-        {
-            return NotFound();
-        }
-
-        _context.Accounts.Remove(account);
-        await _context.SaveChangesAsync();
+        await _accountService.DeleteAccount(id);
 
         return NoContent();
     }

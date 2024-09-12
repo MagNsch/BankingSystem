@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace BankingSystem.API.Models;
+﻿namespace BankingSystem.API.Models;
 
 public class AccountTransaction
 {

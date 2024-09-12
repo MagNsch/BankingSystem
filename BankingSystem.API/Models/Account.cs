@@ -20,9 +20,4 @@ public class Account
     public User? User { get; set; }
     [JsonIgnore]
     public ICollection<AccountTransaction?> Transactions { get; set; } = new List<AccountTransaction?>();
-
-    public void Deconstruct(out object succes, out object updatedAccount)
-    {
-        throw new NotImplementedException();
-    }
 }

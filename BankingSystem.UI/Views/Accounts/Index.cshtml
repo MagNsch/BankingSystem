@@ -33,6 +33,8 @@
         @foreach (var item in Model)
         {
             <tr>
+
+                <p>AccountId: @item.AccountId</p>
                 <td>
                     @Html.DisplayFor(modelItem => item.AccountName)
                 </td>
@@ -48,6 +50,7 @@
                     <a asp-action="Delete" asp-route-id="@item.AccountId" class="btn btn-sm btn-danger">Delete</a>
                     <a asp-action="DepositAmount" asp-route-id="@item.AccountId" class="btn btn-sm btn-outline-info">Deposit</a>
                     <a asp-action="WithdrawAmount" asp-route-id="@item.AccountId" class="btn btn-sm btn-outline-info">Withdraw</a>
+                    <a asp-controller="Transactions" asp-action="GetAccountsTransactions" asp-route-accountId="@item.AccountId" class="btn btn-sm btn-outline-info">Transactions</a>
                 </td>
             </tr>
         }

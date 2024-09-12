@@ -1,7 +1,7 @@
 ﻿using BankingSystem.API.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BankingSystem.API.Services;
+namespace BankingSystem.API.Services.CrudTransactions;
 
 public interface ITransactionCRUD
 {
