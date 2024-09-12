@@ -9,23 +9,23 @@
 <h1>@userNameClaim's accounts</h1>
 
 <p>
-    <a asp-action="CreateAccount" class="btn btn-primary">Create New</a>
+    <a asp-action="CreateAccount" class="btn btn-sm btn-outline-dark">Opret konto</a>
 </p>
 
 <table class="table table-striped table-bordered">
     <thead class="thead-dark">
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.First().AccountName)
+                Kontoens navn
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().Balance)
+                Disponibelt
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.First().AccountType)
+                Konto type
             </th>
             <th>
-                Actions
+                Vælg en handling
             </th>
         </tr>
     </thead>
@@ -33,8 +33,6 @@
         @foreach (var item in Model)
         {
             <tr>
-
-                <p>AccountId: @item.AccountId</p>
                 <td>
                     @Html.DisplayFor(modelItem => item.AccountName)
                 </td>
@@ -45,12 +43,12 @@
                     @Html.DisplayFor(modelItem => item.AccountType)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.AccountId" class="btn btn-sm btn-warning">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.AccountId" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.AccountId" class="btn btn-sm btn-danger">Delete</a>
-                    <a asp-action="DepositAmount" asp-route-id="@item.AccountId" class="btn btn-sm btn-outline-info">Deposit</a>
-                    <a asp-action="WithdrawAmount" asp-route-id="@item.AccountId" class="btn btn-sm btn-outline-info">Withdraw</a>
-                    <a asp-controller="Transactions" asp-action="GetAccountsTransactions" asp-route-accountId="@item.AccountId" class="btn btn-sm btn-outline-info">Transactions</a>
+                    @* <a asp-action="Edit" asp-route-id="@item.AccountId" class="btn btn-sm btn-warning">Edit</a> *@
+                    @* <a asp-action="Details" asp-route-id="@item.AccountId" class="btn btn-sm btn-info">Details</a> *@
+                    <a asp-action="DepositAmount" asp-route-id="@item.AccountId" class="btn btn-sm btn-outline-dark">Indbetal</a>
+                    <a asp-action="WithdrawAmount" asp-route-id="@item.AccountId" class="btn btn-sm btn-outline-dark">Udbetal</a>
+                    <a asp-controller="Transactions" asp-action="GetAccountsTransactions" asp-route-accountId="@item.AccountId" class="btn btn-sm btn-outline-dark">Se transaktioner</a>
+                    <a asp-action="Delete" asp-route-id="@item.AccountId" class="btn btn-sm btn-outline-danger">Slet konto</a>
                 </td>
             </tr>
         }

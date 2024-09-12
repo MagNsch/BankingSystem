@@ -3,18 +3,19 @@
 
 <form asp-action="CreateAccount">
     <div class="form-group">
-        <label asp-for="AccountType" class="control-label"></label>
+        <label asp-for="AccountType" class="control-label">Vælg konto type</label>
         <select asp-for="AccountType" class="form-control" asp-items="Html.GetEnumSelectList<AccountType>()"></select>
         <span asp-validation-for="AccountType" class="text-danger"></span>
     </div>
     
+    <br />
     <div class="form-group">
-        <label asp-for="AccountName" class="control-label"></label>
+        <label asp-for="AccountName" class="control-label">Vælg Konto navn</label>
         <input asp-for="AccountName" class="form-control" />
         <span asp-validation-for="AccountName" class="text-danger"></span>
     </div>
-
-    <button type="submit" class="btn btn-primary">Create</button>
+    <br />
+    <button type="submit" class="btn btn-sm btn-outline-dark">Create</button>
 </form>
 
 

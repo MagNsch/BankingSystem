@@ -4,27 +4,24 @@
     ViewData["Title"] = "GetAccountsTransactions";
 }
 
-<h1>GetAccountsTransactions</h1>
+<h1>Transaktioner</h1>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TransactionId)
+                Overført beløb
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TransferedAmmount)
+                Disponibelt før overførsel
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BalanceBeforeTransaction)
+                Transaktionstype
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AccountTransactionType)
+                Dato og tidspunkt for transaktion
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountId)
+                Konto Id
             </th>
             <th></th>
         </tr>
@@ -33,9 +30,6 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TransactionId)
-                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.TransferedAmmount)
                 </td>
