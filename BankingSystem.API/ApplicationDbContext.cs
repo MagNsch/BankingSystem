@@ -1,14 +1,12 @@
 ﻿using BankingSystem.API.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace BankingSystem.API;
 
 public class ApplicationDbContext : IdentityDbContext<User>
 {
     public DbSet<Account> Accounts { get; set; }
-
     public DbSet<AccountTransaction> Transactions { get; set; }
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
     : base(options)

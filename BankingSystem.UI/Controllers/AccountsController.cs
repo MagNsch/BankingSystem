@@ -1,5 +1,4 @@
 ﻿using BankingSystem.API.Models;
-using BankingSystem.UI.Models;
 using BankingSystem.UI.RestService.Accounts;
 using BankingSystem.UI.RestService.Transactions;
 using Microsoft.AspNetCore.Authorization;
@@ -63,17 +62,17 @@ public class AccountsController : Controller
         {
             ViewBag.Amount = amount;
 
-            if(amount <= 0)
+            if (amount <= 0)
             {
                 ModelState.AddModelError("", "The amount must be greater than zero");
             }
 
-            if(amount > account.Balance)
+            if (amount > account.Balance)
             {
                 ModelState.AddModelError("", "Insufficient Funds");
                 return View();
             }
-            
+
             bool succes = await _transactionRestService.WithDrawFromAccount(id, amount);
             if (!succes)
             {
@@ -90,7 +89,7 @@ public class AccountsController : Controller
     public async Task<IActionResult> Index()
     {
         string userId = User.FindFirst("id")?.Value;
-        if (userId is null)
+        if (string.IsNullOrEmpty(userId))
         {
             return RedirectToAction("Register");
         }
