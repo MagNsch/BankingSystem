@@ -53,14 +53,14 @@ public class UsersController : Controller
 
             var newUser = await _userClient.RegisterUser(model);
 
-            
-            var userAllreadyExist = await _context.Users.SingleOrDefaultAsync(u => u.Email == model.Email);
+
+            var userAllreadyExist = await _userClient.GetUserByEmail(model.Email);
             if (userAllreadyExist is not null)
             {
                 ModelState.AddModelError("", "User with that Email allready exist");
             }
             
-            var user = _context.Users.FirstOrDefault(u => u.Email == model.Email);
+            var user = await _userClient.GetUserByEmail(model.Email);
             if (user is null)
             {
                 ModelState.AddModelError("", "Could not create user");
@@ -112,8 +112,8 @@ public class UsersController : Controller
     [HttpPost]
     public async Task<IActionResult> Login([FromForm] LoginModel loginModel, [FromQuery] string returnUrl)
     {
-        User? user = _context.Users.FirstOrDefault(u => u.Email == loginModel.Email);
-        if (user is null) { return RedirectToAction("RegisterUser", "accounts"); }
+        User? user = await _userClient.GetUserByEmail(loginModel.Email);
+        if (user is null) { return RedirectToAction("RegisterUser", "users"); }
 
         var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, loginModel.Password);
         if (result is PasswordVerificationResult.Failed)
@@ -148,44 +148,4 @@ public class UsersController : Controller
 
         TempData["message"] = $"You are logged in as {claimsIdentity.Name}";
     }
-
-
-
-
-
-
-
-
-
-
-
-
-    // GET: UsersController/Details/5
-    public ActionResult Details(int id)
-    {
-        return View();
-    }
-
-    // GET: UsersController/Create
-    public ActionResult Create()
-    {
-        return View();
-    }
-
-    // POST: UsersController/Create
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Create(IFormCollection collection)
-    {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
-    }
-
-
 }
