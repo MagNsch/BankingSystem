@@ -1,25 +1,17 @@
 ﻿@model RegisterModel
 
 @{
-    ViewData["Title"] = "RegisterUser";
+    ViewData["Title"] = "Register";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register User</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
 
+<body>
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-body">
-                        <h1 class="card-title text-center">Register User</h1>
+                        <h1 class="card-title text-center">Opret bruger</h1>
                         <hr />
 
                         <form asp-action="RegisterUser" method="post" class="needs-validation" novalidate>
@@ -39,8 +31,6 @@
                                 <div class="invalid-feedback">Please enter a password.</div>
                             </div>
 
-                            
-
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary">Create</button>
                             </div>
@@ -50,8 +40,6 @@
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
-</html>
+
 

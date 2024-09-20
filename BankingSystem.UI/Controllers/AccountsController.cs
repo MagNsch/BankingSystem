@@ -88,12 +88,21 @@ public class AccountsController : Controller
     [Authorize]
     public async Task<IActionResult> Index()
     {
+        //if (!User.Identity.IsAuthenticated)
+        //{
+        //    return RedirectToAction("Login", "Users");
+        //}
         string userId = User.FindFirst("id")?.Value;
+
         if (string.IsNullOrEmpty(userId))
         {
-            return RedirectToAction("Register");
+            return RedirectToAction("Register", "Users");
         }
+
+        // Henter alle konti for den autentificerede bruger
         var usersAccounts = await _restClient.GetAllAccounts(userId);
+
+        // Returner view med brugerens konti
         return View(usersAccounts);
     }
 
@@ -112,7 +121,6 @@ public class AccountsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> CreateAccount(Account account)
     {
-
         try
         {
             string userId = User.FindFirst("id")?.Value;
@@ -131,27 +139,6 @@ public class AccountsController : Controller
         }
     }
 
-    // GET: AccountsController/Edit/5
-    public ActionResult Edit(int id)
-    {
-        return View();
-    }
-
-    // POST: AccountsController/Edit/5
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Edit(int id, IFormCollection collection)
-    {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
-    }
-
     // GET: AccountsController/Delete/5
     public async Task<ActionResult> Delete(int id)
     {
@@ -166,8 +153,6 @@ public class AccountsController : Controller
     {
         try
         {
-            //var accountToGet = await _restClient.GetAccountById(id);
-
             var accountToDelete = await _restClient.DeleteAccount(id);
 
             return RedirectToAction("index");

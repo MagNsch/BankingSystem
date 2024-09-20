@@ -13,9 +13,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,
     options =>
     {
-        options.LoginPath = "/Login/Login";
-        options.AccessDeniedPath = "/Login/AccessDenied";
-        options.LogoutPath = "/Login/LogOut";
+        options.LoginPath = "/Users/Login";
     });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
