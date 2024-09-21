@@ -8,5 +8,5 @@ public interface IAccountService
     Task<IEnumerable<Account>> GetAllAccounts(string userId);
     Task<Account> GetAccount(int id);
 
-    Task<Account> DeleteAccount(int id);
+    Task<bool> DeleteAccount(int id);
 }
