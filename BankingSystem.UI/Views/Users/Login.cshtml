@@ -27,7 +27,9 @@
                                     @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-
+                            <div class="mt-2">
+                                <a href="@Url.Action("RegisterUser", "Users")">Har du ikke en konto?</a>
+                            </div>
                             <div class="text-center">
                                 <div class="mt-3">
                                     <button type="submit" class="btn btn-primary">Log ind</button>

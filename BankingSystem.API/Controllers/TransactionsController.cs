@@ -11,41 +11,34 @@ namespace BankingSystem.API.Controllers;
 public class TransactionsController : ControllerBase
 {
     private readonly ITransactionCRUD _transactionCRUD;
+    private readonly ILogger<ITransactionCRUD> _logger;
 
-    public TransactionsController(ITransactionCRUD transactionsCrud)
+    public TransactionsController(ITransactionCRUD transactionsCrud, ILogger<ITransactionCRUD> logger)
     {
 
         _transactionCRUD = transactionsCrud;
+        _logger = logger;
     }
     // GET: api/<TransactionsController>
     [HttpGet("{accountId}")]
-    public async Task<IEnumerable<AccountTransaction?>> GetAllTransactions(int accountId)
+    public async Task<ActionResult<IEnumerable<AccountTransaction?>>> GetAllTransactions(int accountId)
     {
-        return await _transactionCRUD.GetAllTransaction(accountId);
+        _logger.LogInformation("Request received to retrieve all transactions for account with ID: {accountId}", accountId);
+        if (accountId <= 0)
+        {
+            _logger.LogWarning("Invalid accountId: {accountId}. AccountId must be greater than 0.", accountId);
+            return BadRequest(new {Message = "Account ID must be greater than 0."});
+        }
+        try
+        {
+            _logger.LogInformation("Fetching transactions for account with ID: {accountId}", accountId);
+            var transactions = await _transactionCRUD.GetAllTransaction(accountId);
+            return Ok(transactions);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while retrieving transactions for account with ID: {accountId}", accountId);
+            throw;
+        }
     }
-
-    //// GET api/<TransactionsController>/5
-    //[HttpGet("{id}")]
-    //public string Get(int id)
-    //{
-    //    return "value";
-    //}
-
-    // POST api/<TransactionsController>
-    //[HttpPost]
-    //public void Post([FromBody] string value)
-    //{
-    //}
-
-    //// PUT api/<TransactionsController>/5
-    //[HttpPut("{id}")]
-    //public void Put(int id, [FromBody] string value)
-    //{
-    //}
-
-    //// DELETE api/<TransactionsController>/5
-    //[HttpDelete("{id}")]
-    //public void Delete(int id)
-    //{
-    //}
 }

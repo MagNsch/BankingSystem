@@ -5,7 +5,9 @@ using BankingSystem.API.Services.CrudTransactions;
 using BankingSystem.API.Services.TransactionServices;
 using BankingSystem.API.Services.UserServices;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +35,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.ReadFrom.Configuration(context.Configuration);
+}
+);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,6 +57,7 @@ app.MapGet("users/me", async (ClaimsPrincipal claims, ApplicationDbContext conte
     return await context.Users.FindAsync(userid);
 }).RequireAuthorization();
 
+app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();
 

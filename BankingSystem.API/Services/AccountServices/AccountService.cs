@@ -24,20 +24,19 @@ namespace BankingSystem.API.Services.AccountServices
             return account;
         }
 
-        public async Task<Account> DeleteAccount(int id)
+        public async Task<bool> DeleteAccount(int id)
         {
             var account = await GetAccount(id);
 
             if (account == null)
             {
-                throw new Exception("account could not be found");
+                return false; 
             }
 
             _context.Accounts.Remove(account);
-
             await _context.SaveChangesAsync();
 
-            return account;
+            return true;
         }
 
         public async Task<Account> GetAccount(int id)

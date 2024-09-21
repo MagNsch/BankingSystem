@@ -9,48 +9,35 @@ namespace BankingSystem.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly ILogger<UsersController> _logger;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, ILogger<UsersController> logger)
     {
         _userService = userService;
+        _logger = logger;
     }
 
     // GET: api/<UsersController>
     [HttpGet("getbyemail/{email}")]
     public async Task<ActionResult<User>> GetUserByEmail(string email)
     {
-        var user = await _userService.GetUserByEmail(email);
+        _logger.LogInformation("Request received to get user with email: {@email}", email);
 
-        if(user == null)
+        if (string.IsNullOrEmpty(email))
         {
-            return NotFound("User with that eamil was not found");
+            _logger.LogInformation("email is null or empty {@email}", email);
+            return BadRequest(new { Message = "Email was not found" });
         }
 
+        var user = await _userService.GetUserByEmail(email);
+
+        if (user == null)
+        {
+            _logger.LogWarning("user with eamil: {@email} could not be found.", email);
+            return NotFound(new { Message = "User with that eamil was not found" });
+        }
+
+        _logger.LogInformation("Successfully retrieved user with email: {@eamil}", email);
         return Ok(user);
-    }
-
-    // GET api/<UsersController>/5
-    [HttpGet("{id}")]
-    public string Get(int id)
-    {
-        return "value";
-    }
-
-    // POST api/<UsersController>
-    [HttpPost]
-    public void Post([FromBody] string value)
-    {
-    }
-
-    // PUT api/<UsersController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
-
-    // DELETE api/<UsersController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
     }
 }
