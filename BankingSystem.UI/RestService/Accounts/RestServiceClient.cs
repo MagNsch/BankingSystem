@@ -52,15 +52,11 @@ public class RestServiceClient : IRestServiceClient
         return response.Data;
     }
 
-    public async Task<Account> DeleteAccount(int id)
+    public async Task<bool> DeleteAccount(int id)
     {
         var request = new RestRequest($"{id}", Method.Delete);
-        var response = await _client.ExecuteAsync<Account>(request);
-
-        string errorMessage = "Failed to delete account";
-        Exceptions(response, errorMessage);
-
-        return response.Data;
+        var response = await _client.ExecuteAsync(request);
+        return response.IsSuccessStatusCode;
     }
 
 

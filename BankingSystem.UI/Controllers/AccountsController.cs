@@ -155,7 +155,7 @@ public class AccountsController : Controller
         {
             var accountToDelete = await _restClient.DeleteAccount(id);
 
-            return RedirectToAction("index");
+            return RedirectToAction("index", "Accounts");
         }
         catch
         {

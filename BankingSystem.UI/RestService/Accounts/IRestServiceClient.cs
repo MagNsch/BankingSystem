@@ -7,5 +7,5 @@ public interface IRestServiceClient
     Task<IEnumerable<Account>> GetAllAccounts(string userId);
     Task<Account> GetAccountById(int id);
     Task<Account> CreateAccount(Account account);
-    Task<Account> DeleteAccount(int id);
+    Task<bool> DeleteAccount(int id);
 }
