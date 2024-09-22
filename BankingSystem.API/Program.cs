@@ -27,7 +27,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 //Authentication
 builder.Services.AddAuthentication().AddCookie(IdentityConstants.ApplicationScheme);
-
+builder.Services.AddAuthorization();
 builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<ApplicationDbContext>().AddApiEndpoints();
 
@@ -62,6 +62,7 @@ app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapIdentityApi<User>();
