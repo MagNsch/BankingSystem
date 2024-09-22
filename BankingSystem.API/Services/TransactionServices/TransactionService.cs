@@ -1,5 +1,4 @@
 ﻿using BankingSystem.API.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BankingSystem.API.Services.TransactionServices;
 
@@ -11,12 +10,6 @@ public class TransactionService : ITransactionService
     {
         _context = context;
     }
-
-    public async Task<IEnumerable<AccountTransaction?>> GetAllTransaction(int accountId)
-    {
-        return await _context.Transactions.Where(a => a.AccountId == accountId).ToListAsync();
-    }
-
 
     public async Task<bool> DepositAccount(int accountId, decimal amount)
     {

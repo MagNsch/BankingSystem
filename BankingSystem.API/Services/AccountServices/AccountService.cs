@@ -11,6 +11,7 @@ namespace BankingSystem.API.Services.AccountServices
         {
             _context = context;
         }
+
         public async Task<Account> CreateAccount(Account account)
         {
             User? user = _context.Users.AsNoTracking().FirstOrDefault(u => u.Id == account.UserId);
