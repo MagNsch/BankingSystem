@@ -9,4 +9,6 @@ public interface IAccountService
     Task<Account> GetAccount(int id);
 
     Task<bool> DeleteAccount(int id);
+
+    Task TransferFunds(int fromAccountId, int toAccountId, decimal amount);
 }

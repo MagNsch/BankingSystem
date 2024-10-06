@@ -2,9 +2,6 @@
 using BankingSystem.API.Services.AccountServices;
 using BankingSystem.API.Services.TransactionServices;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Serilog;
-using System.Security.Principal;
 
 namespace BankingSystem.API.Controllers;
 
@@ -23,6 +20,36 @@ public class AccountsController : ControllerBase
         _accountService = accountService;
     }
 
+
+    [HttpPost("transferfunds")]
+    public async Task<IActionResult> TransferFunds([FromBody] TransferFundsRequest request)
+    {
+
+        if (request.FromAccountId == request.ToAccountId)
+        {
+            return BadRequest("The source and destination accounts cannot be the same.");
+        }
+
+        if (request.Amount <= 0)
+        {
+            return BadRequest("The amount must be greater than zero.");
+        }
+
+        try
+        {
+            await _accountService.TransferFunds(request.FromAccountId, request.ToAccountId, request.Amount);
+
+            return Ok("Transfer successful.");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while transferring funds.");
+
+            // Returner generell feil
+            return StatusCode(500, "An unexpected error occurred. Please try again later.");
+        }
+    }
+
     [HttpPut("deposit/{accountId}")]
     public async Task<ActionResult<bool>> DepositAccount(int accountId, [FromBody] TransferRequest request)
     {
@@ -31,7 +58,7 @@ public class AccountsController : ControllerBase
         {
             _logger.LogWarning("Deposit attempt with negative amount: {@Amount} for AccountId: {@AccountId}", request.Amount, accountId);
             return BadRequest(new { Message = "The deposit amount must be greater than zero." });
-           
+
         }
 
         var result = await _transactionService.DepositAccount(accountId, request.Amount);
@@ -40,12 +67,12 @@ public class AccountsController : ControllerBase
         {
             _logger.LogWarning("Deposit failed. Account with AccountId: {@AccountId} not found.", accountId);
             return NotFound(new { Message = "Account could not be found!" });
-            
+
         }
 
         _logger.LogInformation("Deposit successful for AccountId: {@AccountId} with amount: {@Amount}", accountId, request.Amount);
-        return Ok(new{ Message = "Deposit was successful"});
-        
+        return Ok(new { Message = "Deposit was successful" });
+
     }
 
     [HttpPut("withdraw/{accountId}")]
@@ -57,10 +84,10 @@ public class AccountsController : ControllerBase
         if (!result)
         {
             return NotFound(new { Message = "The withdrawed amount must be below the accounts balance" });
-            
+
         }
         return Ok(new { Message = "Withdraw was succesful" });
-        
+
     }
 
     // GET: api/Accounts
@@ -73,7 +100,7 @@ public class AccountsController : ControllerBase
         {
             _logger.LogWarning("Invalid UserId: {@UserId}. UserId cannot be null or empty.", userId);
             return BadRequest(new { Message = "UserId cannot be null or empty." });
-            
+
         }
 
         var accounts = await _accountService.GetAllAccounts(userId);
@@ -93,7 +120,7 @@ public class AccountsController : ControllerBase
         {
             _logger.LogWarning("Invalid accountId: {@id}. AccountId must be greater than 0.", id);
             return BadRequest(new { Message = "Account ID must be greater than 0." });
-            
+
         }
         var account = await _accountService.GetAccount(id);
 
