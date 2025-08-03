@@ -8,17 +8,11 @@ namespace BankingSystem.API.Controllers;
 
 [Route("api/transactions")]
 [ApiController]
-public class TransactionsController : ControllerBase
+public class TransactionsController(ITransactionCRUD transactionsCrud, ILogger<ITransactionCRUD> logger) : ControllerBase
 {
-    private readonly ITransactionCRUD _transactionCRUD;
-    private readonly ILogger<ITransactionCRUD> _logger;
+    private readonly ITransactionCRUD _transactionCRUD = transactionsCrud;
+    private readonly ILogger<ITransactionCRUD> _logger = logger;
 
-    public TransactionsController(ITransactionCRUD transactionsCrud, ILogger<ITransactionCRUD> logger)
-    {
-
-        _transactionCRUD = transactionsCrud;
-        _logger = logger;
-    }
     // GET: api/<TransactionsController>
     [HttpGet("{accountId}")]
     public async Task<ActionResult<IEnumerable<AccountTransaction?>>> GetAllTransactions(int accountId)
