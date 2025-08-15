@@ -19,5 +19,18 @@ public class Account
     [JsonIgnore]
     public User? User { get; set; }
     [JsonIgnore]
-    public ICollection<AccountTransaction?> Transactions { get; set; } = new List<AccountTransaction?>();
+    public ICollection<AccountTransaction?> Transactions { get; set; } = [];
+
+    public Account(string accountName, decimal balance, string userId, AccountType accountType)
+    {
+        AccountName = accountName;
+        Balance = balance;
+        UserId = userId;
+        AccountType = accountType;
+    }
+
+    public Account()
+    {
+        
+    }
 }

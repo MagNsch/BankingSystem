@@ -59,8 +59,10 @@ public class AccountsServiceTests
         //arrange
         int accountId = 1;
 
+        string userId = "";
+
         //act
-        var account = await _service.GetAccount(newAccount.AccountId);
+        var account = await _service.GetAccount(newAccount.AccountId, userId);
 
         //assert
         Assert.NotNull(account);
@@ -84,8 +86,9 @@ public class AccountsServiceTests
     [Fact]
     public async Task Delete_Account_inDB()
     {
+        string userId = "";
         var account_created_in_db_has_id_1 = 1;
-        var isDeleted = await _service.DeleteAccount(account_created_in_db_has_id_1);
+        var isDeleted = await _service.DeleteAccount(account_created_in_db_has_id_1, userId);
         _context.SaveChanges();
 
         Assert.True(isDeleted);

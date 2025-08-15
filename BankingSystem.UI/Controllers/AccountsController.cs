@@ -100,7 +100,7 @@ public class AccountsController : Controller
         }
 
         // Henter alle konti for den autentificerede bruger
-        var usersAccounts = await _restClient.GetAllAccounts(userId);
+        var usersAccounts = await _restClient.GetAllAccounts();
 
         // Returner view med brugerens konti
         return View(usersAccounts);
