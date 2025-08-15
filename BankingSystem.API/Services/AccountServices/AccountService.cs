@@ -1,4 +1,5 @@
 ﻿using BankingSystem.API.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace BankingSystem.API.Services.AccountServices;
@@ -49,9 +50,9 @@ public class AccountService : IAccountService
         return account;
     }
 
-    public async Task<bool> DeleteAccount(int id)
+    public async Task<bool> DeleteAccount(int id, string userId)
     {
-        var account = await GetAccount(id);
+        var account = await GetAccount(id, userId);
 
         if (account == null)
         {
@@ -64,36 +65,19 @@ public class AccountService : IAccountService
         return true;
     }
 
-    public async Task<Account> GetAccount(int id)
+    public async Task<Account> GetAccount(int id, string userId)
     {
-        //var account = await _context.Accounts
-        //                            .AsNoTracking()
-        //                            .FirstOrDefaultAsync(a => a.AccountId == id && a.UserId == userId);
-
-        if (id == 0)
-        {
-            throw new Exception("Id is 0");
-        }
-        var account = await _context.Accounts.AsNoTracking().FirstAsync(a => a.AccountId == id);
+        var account = await _context.Accounts.AsNoTracking().FirstOrDefaultAsync(a => a.UserId == userId && a.AccountId == id);
         return account;
     }
 
     public async Task<IEnumerable<Account>> GetAllAccounts(string userId)
     {
-        //if(string.IsNullOrEmpty(userId))
-        //{
-        //    throw new Exception("userId not found");
-        //}
-
-        var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
-
-        //if(user == null)
-        //{
-        //    throw new Exception("User not found");
-        //}
-
-        var accounts = await _context.Accounts.AsNoTracking().Where(a => a.UserId == user.Id).AsNoTracking().ToListAsync();
-
-        return accounts;
+        if (string.IsNullOrEmpty(userId))
+        {
+            throw new Exception("User cannot be logged in");
+        }
+        var user = await _context.Users.AsNoTracking().Include(u => u.Accounts.OrderBy(a => a.AccountId)).FirstOrDefaultAsync(u => u.Id == userId);
+        return user.Accounts;
     }
 }

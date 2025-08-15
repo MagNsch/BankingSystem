@@ -1,4 +1,4 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.UI.Models;
 using BankingSystem.UI.RestService.Accounts;
 using BankingSystem.UI.RestService.Transactions;
 using Microsoft.AspNetCore.Authorization;
@@ -88,19 +88,7 @@ public class AccountsController : Controller
     [Authorize]
     public async Task<IActionResult> Index()
     {
-        //if (!User.Identity.IsAuthenticated)
-        //{
-        //    return RedirectToAction("Login", "Users");
-        //}
-        string userId = User.FindFirst("id")?.Value;
-
-        if (string.IsNullOrEmpty(userId))
-        {
-            return RedirectToAction("Register", "Users");
-        }
-
-        // Henter alle konti for den autentificerede bruger
-        var usersAccounts = await _restClient.GetAllAccounts(userId);
+        var usersAccounts = await _restClient.GetAllAccounts();
 
         // Returner view med brugerens konti
         return View(usersAccounts);

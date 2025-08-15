@@ -1,29 +1,25 @@
-﻿using BankingSystem.API.Models;
-using BankingSystem.UI.Models;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using BankingSystem.UI.Models;
+using BankingSystem.UI.RestService.Users;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using BankingSystem.API;
-using Microsoft.AspNetCore.Identity;
-using BankingSystem.UI.RestService.Users;
-using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
-using Microsoft.EntityFrameworkCore;
 
 namespace BankingSystem.UI.Controllers;
 
 public class UsersController : Controller
 {
-    private readonly ApplicationDbContext _context;
-    private readonly IPasswordHasher<User> _passwordHasher;
     private readonly IUserClient _userClient;
+    private readonly IPasswordHasher<User> _passwordHasher;
 
-    public UsersController(ApplicationDbContext context, IPasswordHasher<User> passwordHasher, IUserClient userClient)
+    public UsersController(IUserClient userClient, IPasswordHasher<User> passwordHasher)
     {
-        _passwordHasher = passwordHasher;
-        _context = context;
         _userClient = userClient;
+        _passwordHasher = passwordHasher;
+
     }
 
     // GET: UsersController
@@ -59,7 +55,7 @@ public class UsersController : Controller
             {
                 ModelState.AddModelError("", "User with that Email allready exist");
             }
-            
+
             var user = await _userClient.GetUserByEmail(model.Email);
             if (user is null)
             {
@@ -73,7 +69,6 @@ public class UsersController : Controller
                 return View(model);
             }
 
-            await _context.SaveChangesAsync();
             await SignIn(user);
 
             return RedirectToAction("Index", "Accounts");

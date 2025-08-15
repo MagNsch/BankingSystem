@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BankingSystem.API\BankingSystem.API.csproj" />
   </ItemGroup>
 
 </Project>

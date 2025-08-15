@@ -1,6 +1,5 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.UI.Models;
 using RestSharp;
-using System.Collections.Generic;
 
 namespace BankingSystem.UI.RestService.Transactions;
 
@@ -34,7 +33,7 @@ public class TransactionsRestService : ITransactionRestService
     {
         var request = new RestRequest($"{accountId}", Method.Get);
         var response = await _transactionClient.ExecuteAsync<List<AccountTransaction>>(request);
-        
+
         return response.Data;
     }
 

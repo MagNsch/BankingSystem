@@ -1,7 +1,9 @@
 ﻿using BankingSystem.API.Models;
 using BankingSystem.API.Services.AccountServices;
 using BankingSystem.API.Services.TransactionServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BankingSystem.API.Controllers;
 
@@ -90,10 +92,12 @@ public class AccountsController : ControllerBase
 
     }
 
-    // GET: api/Accounts
-    [HttpGet("getall/{userId}")]
-    public async Task<ActionResult<IEnumerable<Account?>>> GetAccounts(string userId)
+
+    [Authorize]
+    [HttpGet("getall")]
+    public async Task<ActionResult<IEnumerable<Account?>>> GetAccounts()
     {
+        string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         _logger.LogInformation("Retrieving accounts for UserId: {@UserId}", userId);
 
         if (string.IsNullOrEmpty(userId))
@@ -109,11 +113,11 @@ public class AccountsController : ControllerBase
         return Ok(accounts);
     }
 
-    // GET: api/Accounts/5
-
     [HttpGet("{id}")]
     public async Task<ActionResult<Account>> GetAccount(int id)
     {
+        string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         _logger.LogInformation("Request received to get account with id: {@id}", id);
 
         if (id <= 0)
@@ -122,7 +126,7 @@ public class AccountsController : ControllerBase
             return BadRequest(new { Message = "Account ID must be greater than 0." });
 
         }
-        var account = await _accountService.GetAccount(id);
+        var account = await _accountService.GetAccount(id, userId);
 
         if (account == null)
         {
@@ -137,9 +141,23 @@ public class AccountsController : ControllerBase
     // POST: api/Accounts
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost("newaccount")]
-    public async Task<ActionResult<Account>> PostAccount(Account account)
+    public async Task<ActionResult<Account>> CreateAccount(AccountDto accountDto)
     {
-        _logger.LogInformation("Request received to create account: {@account}", account);
+        string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrWhiteSpace(userId))
+        {
+            return Unauthorized();
+        }
+
+        Account account = new Account
+        {
+            AccountName = accountDto.AccountName,
+            Balance = accountDto.Balance,
+            UserId = userId,
+            AccountType = accountDto.AccountType,
+        };
+
         await _accountService.CreateAccount(account);
 
         if (account is null)
@@ -156,6 +174,8 @@ public class AccountsController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAccountAsync(int id)
     {
+        string? userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         _logger.LogInformation("Request received to delete account with ID: {id}", id);
 
         // Validate account ID
@@ -168,7 +188,7 @@ public class AccountsController : ControllerBase
         try
         {
             // Try to delete the account
-            var isDeleted = await _accountService.DeleteAccount(id);
+            var isDeleted = await _accountService.DeleteAccount(id, userId);
 
             if (!isDeleted)
             {

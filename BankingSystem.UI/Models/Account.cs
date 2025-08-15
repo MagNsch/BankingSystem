@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BankingSystem.UI.Models;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace BankingSystem.API.Models;
+namespace BankingSystem.UI.Models;
 
 public class Account
 {
