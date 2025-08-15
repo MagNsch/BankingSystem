@@ -1,5 +1,4 @@
-﻿using BankingSystem.API.Models;
-using BankingSystem.UI.Models;
+﻿using BankingSystem.UI.Models;
 using Microsoft.AspNetCore.Identity;
 using RestSharp;
 

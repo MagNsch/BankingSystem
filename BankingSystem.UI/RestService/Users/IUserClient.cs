@@ -1,5 +1,4 @@
-﻿using BankingSystem.API.Models;
-using BankingSystem.UI.Models;
+﻿using BankingSystem.UI.Models;
 
 namespace BankingSystem.UI.RestService.Users;
 

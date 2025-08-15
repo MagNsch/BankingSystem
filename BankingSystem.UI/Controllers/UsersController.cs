@@ -1,7 +1,4 @@
-﻿
-
-using BankingSystem.API.Models;
-using BankingSystem.UI.Models;
+﻿using BankingSystem.UI.Models;
 using BankingSystem.UI.RestService.Users;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

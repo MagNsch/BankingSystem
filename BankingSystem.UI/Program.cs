@@ -1,6 +1,4 @@
-
-
-using BankingSystem.API.Models;
+using BankingSystem.UI.Models;
 using BankingSystem.UI.RestService.Accounts;
 using BankingSystem.UI.RestService.Transactions;
 using BankingSystem.UI.RestService.Users;
@@ -17,9 +15,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
-//builder.Services.AddDbContext<ApplicationDbContext>(options =>
-//        options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IRestServiceClient, RestServiceClient>();

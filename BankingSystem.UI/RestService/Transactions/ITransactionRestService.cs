@@ -1,4 +1,4 @@
-﻿using BankingSystem.API.Models;
+﻿using BankingSystem.UI.Models;
 using System.Collections.Generic;
 using System.Transactions;
 

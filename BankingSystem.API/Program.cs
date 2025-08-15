@@ -21,7 +21,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Services
-builder.Services.AddTransient<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ITransactionCRUD, TransactionCRUD>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -84,5 +84,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.MapIdentityApi<User>();
+
+
 
 app.Run();

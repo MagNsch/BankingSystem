@@ -1,8 +1,5 @@
-﻿using BankingSystem.API.Models;
-using Microsoft.AspNetCore.Http;
+﻿using BankingSystem.UI.Models;
 using RestSharp;
-using SQLitePCL;
-using System.Net;
 
 namespace BankingSystem.UI.RestService.Accounts;
 
@@ -18,7 +15,7 @@ public class RestServiceClient : IRestServiceClient
     }
     public async Task<IEnumerable<Account>> GetAllAccounts()
     {
-        
+
         var request = new RestRequest($"getall", Method.Get);
         AddAuthCookieToRequest(request);
         var response = await _client.ExecuteAsync<List<Account>>(request);

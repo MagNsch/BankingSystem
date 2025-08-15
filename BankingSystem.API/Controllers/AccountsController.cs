@@ -12,13 +12,13 @@ namespace BankingSystem.API.Controllers;
 public class AccountsController : ControllerBase
 {
     private readonly ILogger<AccountsController> _logger;
-    //private readonly ITransactionService _transactionService;
+    private readonly ITransactionService _transactionService;
     private readonly IAccountService _accountService;
 
-    public AccountsController(ILogger<AccountsController> logger, /*ITransactionService transactionService*/, IAccountService accountService)
+    public AccountsController(ILogger<AccountsController> logger, ITransactionService transactionService, IAccountService accountService)
     {
         _logger = logger;
-        //_transactionService = transactionService;
+        _transactionService = transactionService;
         _accountService = accountService;
     }
 
